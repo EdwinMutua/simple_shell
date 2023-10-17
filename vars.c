@@ -2,7 +2,7 @@
 
 /**
  * is_chain - Test if the current character in the buffer is a chain delimiter.
- * @info: The parameter struct.
+ * @info: The param struct.
  * @buf: The character buffer.
  * @p: Address of the current position in buf.
  *
