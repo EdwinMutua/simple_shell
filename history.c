@@ -8,23 +8,21 @@
  */
 char *get_history_file(info_t *info)
 {
-    char *dir = _getenv(info, "HOME=");
-    if (!dir)
-        return (NULL);
-
-    char *buf = malloc(sizeof(char) * (strlen(dir) + strlen(HIST_FILE) + 2));
-    if (!buf)
-    {
-        free(dir);
-        return (NULL);
-    }
-
-    strcpy(buf, dir);
-    strcat(buf, "/");
-    strcat(buf, HIST_FILE);
-
-    free(dir);
-    return (buf);
+	char *dir = _getenv(info, "HOME=");
+	char *buf;
+	
+	if (!buf)
+		return (NULL)
+			buf = malloc(sizeof(char) * (strlen(dir) + strlen(HIST_FILE) + 2));
+	{
+		free(dir);
+		return (NULL);
+	}
+	strcpy(buf, dir);
+	strcat(buf, "/");
+	strcat(buf, HIST_FILES);
+	free(dir);
+	return (buf);
 }
 
 /**
@@ -35,27 +33,26 @@ char *get_history_file(info_t *info)
  */
 int write_history(info_t *info)
 {
-    char *filename = get_history_file(info);
-    if (!filename)
-        return (-1);
-
-    ssize_t fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
-    free(filename);
-
-    if (fd == -1)
-        return (-1);
-
-    list_t *node = info->history;
-    while (node)
-    {
-        _putsfd(node->str, fd);
-        _putfd('\n', fd);
-        node = node->next;
-    }
-
-    _putfd(BUF_FLUSH, fd);
-    close(fd);
-    return (1);
+	char *filename = get_history_file(info);
+	ssize_t fd;
+	
+	if (!filename)
+		return (-1);
+	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	free(filename);
+	
+	if (fd == -1)
+		return (-1);
+	list_t *node = info->history;
+	while (node)
+	{
+		_putsfd(node->str, fd);
+		_putfd('\n', fd);
+		node = node->next;
+	}
+	_putfd(BUF_FLUSH, fd);
+	close(fd);
+	return (1);
 }
 
 /**
@@ -176,4 +173,3 @@ int renumber_history(info_t *info)
 
     return (info->histcount = i);
 }
-

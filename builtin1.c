@@ -110,7 +110,6 @@ int _myalias(info_t *info)
 
 int main(void)
 {
-    // Your main function code here
     return (0);
 }
 
