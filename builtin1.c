@@ -1,115 +1,85 @@
 #include "shell.h"
 
 /**
- * _myhistory - Display the history list with line numbers.
- * @info: Structure containing potential arguments.
- * Return: Always 0.
+ * is_interactive - Check if the shell is in interactive mode.
+ * @info: Pointer to struct info_t.
+ *
+ * Return: 1 if in interactive mode, 0 otherwise.
  */
-int _myhistory(info_t *info)
+int is_interactive(info_t *info)
 {
-    print_list(info->history);
-    return (0);
+	return (isatty(STDIN_FILENO) && info->readfd <= 2);
 }
 
 /**
- * unset_alias - Unset an alias.
- * @info: Parameter struct.
- * @str: The string alias.
- * Return: Always 0 on success, 1 on error.
+ * is_delimiter - Check if a character is a delimiter.
+ * @c: The character to check.
+ * @delim: The delimiter string.
+ *
+ * Return: 1 if it's a delimiter, 0 if not.
  */
-int unset_alias(info_t *info, char *str)
+int is_delimiter(char c, char *delim)
 {
-    char *p, c;
-    int ret;
-
-    p = _strchr(str, '=');
-    if (!p)
-        return (1);
-    c = *p;
-    *p = '\0';
-    ret = delete_node_at_index(&(info->alias),
-        get_node_index(info->alias, node_starts_with(info->alias, str, -1)));
-    *p = c;
-    return (ret);
+	while (*delim)
+	{
+		if (*delim++ == c)
+		{
+			return (1);
+		}
+	}
+	return (0);
 }
 
 /**
- * set_alias - Set an alias.
- * @info: Parameter struct.
- * @str: The string alias.
- * Return: Always 0 on success, 1 on error.
+ * is_alpha - Check if a character is alphabetic.
+ * @c: The character to check.
+ *
+ * Return: 1 if it's alphabetic, 0 otherwise.
  */
-int set_alias(info_t *info, char *str)
+int is_alpha(int c)
 {
-    char *p;
-
-    p = _strchr(str, '=');
-    if (!p)
-        return (1);
-    if (!*++p)
-        return (unset_alias(info, str));
-
-    unset_alias(info, str);
-    return (add_node_end(&(info->alias), str, 0) == NULL);
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
 
 /**
- * print_alias - Print an alias string.
- * @node: The alias node.
- * Return: Always 0 on success, 1 on error.
+ * string_to_int - Convert a string to an integer.
+ * @s: The string to be converted.
+ *
+ * Return: 0 if no numbers in the string, the converted number otherwise.
  */
-int print_alias(list_t *node)
+int string_to_int(char *s)
 {
-    char *p = NULL, *a = NULL;
+	int i, sign = 1, flag = 0, output;
+	unsigned int result = 0;
 
-    if (node)
-    {
-        p = _strchr(node->str, '=');
-        for (a = node->str; a <= p; a++)
-            _putchar(*a);
-        _putchar('\'');
-        _puts(p + 1);
-        _puts("'\n");
-        return (0);
-    }
-    return (1);
-}
+	for (i = 0; s[i] != '\0' && flag != 2; i++)
+	{
+		if (s[i] == '-')
+		{
+			sign *= -1;
+		}
 
-/**
- * _myalias - Mimic the alias builtin (man alias).
- * @info: Structure containing potential arguments.
- * Return: Always 0.
- */
-int _myalias(info_t *info)
-{
-    int i = 0;
-    char *p = NULL;
-    list_t *node = NULL;
+		if (s[i] >= '0' && s[i] <= '9')
+		{
+			flag = 1;
+			result *= 10;
+			result += (s[i] - '0');
+		}
+		else if (flag == 1)
+		{
+			flag = 2;
+		}
+	}
 
-    if (info->argc == 1)
-    {
-        node = info->alias;
-        while (node)
-        {
-            print_alias(node);
-            node = node->next;
-        }
-        return (0);
-    }
-    for (i = 1; info->argv[i]; i++)
-    {
-        p = _strchr(info->argv[i], '=');
-        if (p)
-            set_alias(info, info->argv[i]);
-        else
-            print_alias(node_starts_with(info->alias, info->argv[i], '='));
-    }
+	if (sign == -1)
+	{
+		output = -result;
+	}
+	else
+	{
+		output = result;
+	}
 
-    return (0);
-}
-
-int main(void)
-{
-    return (0);
+	return (output);
 }
 
