@@ -21,12 +21,12 @@ void _eputs(char *str)
  * _eputchar - writes the character c to stderr
  * @c: The character to print
  *
- * Return: On success 1.
+ * Return: On success (1).
  * On error, -1 is returned, and errno is set appropriately.
  */
 int _eputchar(char c)
 {
-	static int i = 0;
+	static int i;
 	static char buf[WRITE_BUF_SIZE];
 
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
@@ -38,7 +38,7 @@ int _eputchar(char c)
 	if (c != BUF_FLUSH)
 		buf[i++] = c;
 
-	return 1;
+	return (1);
 }
 
 /**
@@ -46,12 +46,12 @@ int _eputchar(char c)
  * @c: The character to print
  * @fd: The file descriptor to write to
  *
- * Return: On success 1.
+ * Return: On success (1).
  * On error, -1 is returned, and errno is set appropriately.
  */
 int _putfd(char c, int fd)
 {
-	static int i = 0;
+	static int i;
 	static char buf[WRITE_BUF_SIZE];
 
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
@@ -63,7 +63,7 @@ int _putfd(char c, int fd)
 	if (c != BUF_FLUSH)
 		buf[i++] = c;
 
-	return 1;
+	return (1);
 }
 
 /**
@@ -78,13 +78,13 @@ int _putsfd(char *str, int fd)
 	int count = 0;
 
 	if (!str)
-		return 0;
+		return (0);
 
 	while (*str)
 	{
 		count += _putfd(*str++, fd);
 	}
 
-	return count;
+	return (count);
 }
 
