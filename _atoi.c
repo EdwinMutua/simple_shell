@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #include "shell.h"
 /**
  * is_interactive - returns 1 if shell is interactive
